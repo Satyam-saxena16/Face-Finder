@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Face Finder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <img src="logo.jpg" alt="Face Finder Logo" class="logo-top">
+    <div class="container">
+        <h2>Face Finder</h2>
+        <form id="uploadForm">
+            <label>
+                Upload Selfie:
+                <input type="file" name="selfie" accept="image/*" required>
+            </label>
+            <label>
+                Upload Photos (You can select multiple photos):
+                <input type="file" name="photos" accept="image/*" multiple required>
+            </label>
+            <button type="submit">Find Faces</button>
+        </form>
+        <div id="result"></div>
+        <button id="downloadBtn" style="display:none; margin-top: 16px;">Download Results</button>
+    </div>
+
+    <script>
+    const downloadBtn = document.getElementById('downloadBtn');
+    downloadBtn.onclick = function() {
+        window.location = 'http://localhost:8080/api/download-results';
+    };
+
+    document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData();
+        const selfie = form.selfie.files[0];
+        const photos = form.photos.files;
+
+        if (!selfie || photos.length === 0) {
+            alert('Please select a selfie and at least one photo.');
+            return;
+        }
+
+        formData.append('selfie', selfie);
+        for (let i = 0; i < photos.length; i++) {
+            formData.append('photos', photos[i]);
+        }
+
+        document.getElementById('result').innerHTML = 'Processing...';
+        downloadBtn.style.display = 'none';
+
+        try {
+            const response = await fetch('http://localhost:8080/api/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonErr) {
+                const text = await response.text();
+                throw new Error(text);
+            }
+
+            if (data.status === 'success') {
+                let html = `<b>Success!</b><br>Matched Images:<ul>`;
+                if (data.matchedImages && data.matchedImages.length > 0) {
+                    for (const img of data.matchedImages) {
+                        html += `<li>${img}</li>`;
+                    }
+                    downloadBtn.style.display = 'block';
+                } else {
+                    html += `<li>No matches found.</li>`;
+                    downloadBtn.style.display = 'none';
+                }
+                html += `</ul>`;
+                document.getElementById('result').innerHTML = html;
+            } else {
+                document.getElementById('result').innerHTML = `<b>Error:</b> ${data.output || 'Unknown error.'}`;
+                downloadBtn.style.display = 'none';
+            }
+        } catch (err) {
+            document.getElementById('result').innerHTML = `<b>Request failed:</b> ${err.message}`;
+            downloadBtn.style.display = 'none';
+        }
+    });
+    </script>
+</body>
+</html>
