@@ -50,7 +50,8 @@ public class FaceFinderController {
             }
 
             // 5. Call Python script
-            ProcessBuilder pb = new ProcessBuilder("python", "C:/Users/KIIT/Desktop/facefinder2/scripts/face_finder.py");
+            String scriptPath = BASE_DIR + File.separator + "scripts" + File.separator + "face_finder.py";
+            ProcessBuilder pb = new ProcessBuilder("python", scriptPath);
             pb.redirectErrorStream(true);
             Process process = pb.start();
 
