@@ -45,8 +45,12 @@ FACEFINDER2/
 ├── test/
 ├── target/
 ├── uploads/
+│   ├── selfie/        # Place your selfie images here (.gitkeep included)
+│   ├── photos/        # Place your photos to search here (.gitkeep included)
+│   └── results/       # Matched results will be saved here (.gitkeep included)
 ├── .gitattributes
 ├── .gitignore
+├── Dockerfile        # Docker configuration for deployment
 ├── HELP.md
 ├── mvnw
 ├── mvnw.cmd
@@ -74,10 +78,10 @@ This will start your backend server at http://localhost:8080.
 ------------------------------
 Ensure Python 3 and required packages are installed.
 
-pip install face_recognition flask requests
-python face_finder.py
+pip install insightface numpy pillow onnxruntime
+python scripts/face_finder.py
 
-Optional: Use ngrok to expose your local Python server if needed.
+Uploads and results folders are tracked with .gitkeep files so they remain in the repo even when empty.
 
 4. Frontend
 -----------
