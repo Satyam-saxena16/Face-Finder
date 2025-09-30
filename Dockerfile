@@ -37,6 +37,8 @@ COPY uploads/ uploads/
 # Install Python dependencies
 RUN pip3 install insightface numpy pillow onnxruntime
 
+# Set execute permission for mvnw
+RUN chmod +x mvnw
 # Build the Spring Boot application
 RUN ./mvnw package -DskipTests
 
