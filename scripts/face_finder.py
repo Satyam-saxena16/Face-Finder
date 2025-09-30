@@ -4,9 +4,10 @@ from PIL import Image
 import os
 import shutil
 
-SELFIE_DIR = 'C:/Users/KIIT/Desktop/facefinder2/uploads/selfie'
-PHOTOS_DIR = 'C:/Users/KIIT/Desktop/facefinder2/uploads/photos'
-RESULTS_DIR = 'C:/Users/KIIT/Desktop/facefinder2/uploads/results'
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SELFIE_DIR = os.path.join(BASE_DIR, 'uploads', 'selfie')
+PHOTOS_DIR = os.path.join(BASE_DIR, 'uploads', 'photos')
+RESULTS_DIR = os.path.join(BASE_DIR, 'uploads', 'results')
 
 def get_embedding(model, img_path):
       img = insightface.utils.face_align.norm_crop(np.array(Image.open(img_path)))
